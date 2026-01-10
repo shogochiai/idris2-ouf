@@ -13,3 +13,8 @@ ipkg   = "idris2-yul.ipkg"
 type   = "local"
 path   = "../idris2-subcontract"
 ipkg   = "idris2-subcontract.ipkg"
+
+[custom.all.idris2-ouf]
+type   = "local"
+path   = "."
+ipkg   = "idris2-ouf.ipkg"

@@ -7,6 +7,7 @@
 module Main.Functions.Factory
 
 import Main.Storages.Schema
+import Subcontract.Std.Functions.ProxyFactory
 
 %default covering
 
@@ -59,18 +60,19 @@ registerUpgrader upgraderId addr = do
 
 ||| Create new OU clone
 ||| Uses CREATE2 with upgraderId as salt for deterministic addresses
+||| Deploys ERC-7546 Proxy pointing to shared Dictionary
 export
 createUpgrader : IO Integer
 createUpgrader = do
-  -- Get next ID
+  -- Get next ID (used as salt for CREATE2)
   upgraderId <- getUpgraderCount
 
-  -- Get init code for minimal proxy pointing to Dictionary
+  -- Get shared Dictionary address
   dictAddr <- getDictionary
 
-  -- CREATE2: address = keccak256(0xff ++ factory ++ salt ++ keccak256(initCode))
-  -- For now, return placeholder - actual CREATE2 implementation needed
-  let newAddr = dictAddr + upgraderId  -- Placeholder
+  -- Deploy ERC-7546 Proxy via CREATE2
+  -- deployProxy stores dictionary in DICTIONARY_SLOT and returns proxy address
+  newAddr <- deployProxy dictAddr upgraderId
 
   -- Register in registry
   registerUpgrader upgraderId newAddr
