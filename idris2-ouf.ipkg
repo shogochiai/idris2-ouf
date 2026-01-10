@@ -1,0 +1,18 @@
+package idris2-ouf
+
+version = "0.1.0"
+
+sourcedir = "src"
+
+depends = base
+        , contrib
+        , idris2-yul
+        , idris2-subcontract
+
+modules = Main.Storages.Schema
+        , Main.Functions.Factory
+        , Main.Functions.ProposeUpgrade
+        , Main.Functions.Vote
+        , Main.Functions.Tally
+        , Main.Functions.AssignAuditor
+        , Main.Tests.AllTests

@@ -1,0 +1,127 @@
+# OUF (Onchain Upgrader Factory) Specification
+# Managed by: lazy evm ask
+
+[meta]
+name = "OUF"
+version = "0.1.0"
+description = "Onchain Upgrader Factory - ERC-7546 Clone Factory with DAO governance"
+depends = ["idris2-subcontract"]
+
+# =============================================================================
+# Factory Functions
+# =============================================================================
+
+[specs.FACTORY_CREATE]
+description = "createUpgrader deploys new OU clone via CREATE2"
+module = "Main.Functions.Factory"
+priority = "critical"
+
+[specs.FACTORY_REGISTRY]
+description = "Factory maintains upgrader registry (id -> address)"
+module = "Main.Functions.Factory"
+priority = "high"
+
+[specs.FACTORY_DICTIONARY]
+description = "All clones share upgraderDictionary for function dispatch"
+module = "Main.Functions.Factory"
+priority = "high"
+
+# =============================================================================
+# Proposal Functions
+# =============================================================================
+
+[specs.PROPOSE_CREATE]
+description = "proposeUpgrade creates new upgrade proposal"
+module = "Main.Functions.ProposeUpgrade"
+priority = "critical"
+
+[specs.PROPOSE_VALIDATE]
+description = "Proposal requires valid target, selector, newImpl"
+module = "Main.Functions.ProposeUpgrade"
+priority = "high"
+
+[specs.PROPOSE_ONLY_PROPOSER]
+description = "Only designated proposer can create proposals"
+module = "Main.Functions.ProposeUpgrade"
+priority = "critical"
+
+# =============================================================================
+# Vote Functions
+# =============================================================================
+
+[specs.VOTE_CAST]
+description = "Auditor casts vote (approve/reject/requestChanges)"
+module = "Main.Functions.Vote"
+priority = "critical"
+
+[specs.VOTE_ONCE]
+description = "Each auditor can vote only once per proposal"
+module = "Main.Functions.Vote"
+priority = "critical"
+
+[specs.VOTE_DEADLINE]
+description = "Votes rejected after deadline"
+module = "Main.Functions.Vote"
+priority = "high"
+
+[specs.VOTE_SIGNATURE]
+description = "Vote requires valid auditor signature"
+module = "Main.Functions.Vote"
+priority = "critical"
+
+# =============================================================================
+# Tally Functions
+# =============================================================================
+
+[specs.TALLY_THRESHOLD]
+description = "n-of-n approval required (threshold = auditorCount)"
+module = "Main.Functions.Tally"
+priority = "critical"
+
+[specs.TALLY_AUTO_EXECUTE]
+description = "Auto-execute when threshold met + proposer signature"
+module = "Main.Functions.Tally"
+priority = "high"
+
+[specs.TALLY_STATUS]
+description = "getVotingStatus returns (votes, threshold, isComplete)"
+module = "Main.Functions.Tally"
+priority = "medium"
+
+# =============================================================================
+# Auditor Assignment
+# =============================================================================
+
+[specs.AUDITOR_ASSIGN]
+description = "Admin assigns auditors to proposal"
+module = "Main.Functions.AssignAuditor"
+priority = "critical"
+
+[specs.AUDITOR_POOL]
+description = "Auditors drawn from OUC-managed pool"
+module = "Main.Functions.AssignAuditor"
+priority = "high"
+
+[specs.AUDITOR_COUNT]
+description = "Progressive auditor requirement (nth upgrade needs n auditors)"
+module = "Main.Functions.AssignAuditor"
+priority = "medium"
+
+# =============================================================================
+# Storage Schema
+# =============================================================================
+
+[specs.SCHEMA_PROPOSAL]
+description = "Proposal storage: target, newImpl, selector, votes, deadline, executed"
+module = "Main.Storages.Schema"
+priority = "critical"
+
+[specs.SCHEMA_VOTES]
+description = "Vote storage: nested mapping proposalId -> auditor -> decision"
+module = "Main.Storages.Schema"
+priority = "critical"
+
+[specs.SCHEMA_AUDITORS]
+description = "Auditor list storage with count"
+module = "Main.Storages.Schema"
+priority = "high"

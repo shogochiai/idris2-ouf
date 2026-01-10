@@ -1,0 +1,15 @@
+# Pack configuration for idris2-ouf
+# To use: pack build idris2-ouf.ipkg
+
+[idris2]
+version = "0.8.0"
+
+[custom.all.idris2-yul]
+type   = "local"
+path   = "../idris2-yul"
+ipkg   = "idris2-yul.ipkg"
+
+[custom.all.idris2-subcontract]
+type   = "local"
+path   = "../idris2-subcontract"
+ipkg   = "idris2-subcontract.ipkg"
