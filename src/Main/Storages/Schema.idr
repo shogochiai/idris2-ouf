@@ -6,24 +6,14 @@ module Main.Storages.Schema
 
 import public EVM.Primitives
 import public Subcontract.Core.FR
+import public Subcontract.Core.Schema
+import public Subcontract.Core.SchemaCompat
 
 %default total
 
 -- =============================================================================
--- Helper Functions
--- =============================================================================
-
-||| Calculate mapping slot (simplified: base + key)
-||| For proper EVM: keccak256(abi.encode(key, base))
-public export
-mappingSlot : Integer -> Integer -> IO Integer
-mappingSlot base key = do
-  -- Proper implementation would use keccak256
-  -- For now: simple offset calculation
-  mstore 0 key
-  mstore 32 base
-  keccak256 0 64
-
+-- Note: mappingSlot is now imported from EVM.Storage.Namespace
+-- via Subcontract.Core.Schema
 -- =============================================================================
 -- REQ_SCHEMA_PROPOSAL: Proposal storage layout
 -- =============================================================================
@@ -185,9 +175,6 @@ EVENT_UPGRADE_EXECUTED = 0xcde012
 -- =============================================================================
 -- These Schema types mirror the slot constants above and enable compile-time
 -- upgrade validation via Subcontract.Core.SchemaCheck.
-
-import Subcontract.Core.Schema
-import Subcontract.Core.SchemaCompat
 
 ||| Proposal storage schema
 ||| Maps proposalId -> Proposal struct (8 fields)
