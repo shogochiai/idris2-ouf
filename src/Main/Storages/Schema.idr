@@ -179,3 +179,77 @@ EVENT_VOTE_CAST = 0x789abc
 public export
 EVENT_UPGRADE_EXECUTED : Integer
 EVENT_UPGRADE_EXECUTED = 0xcde012
+
+-- =============================================================================
+-- Type-Safe Schema Definitions
+-- =============================================================================
+-- These Schema types mirror the slot constants above and enable compile-time
+-- upgrade validation via Subcontract.Core.SchemaCheck.
+
+import Subcontract.Core.Schema
+import Subcontract.Core.SchemaCompat
+
+||| Proposal storage schema
+||| Maps proposalId -> Proposal struct (8 fields)
+|||
+||| Mirrors:
+||| ```solidity
+||| struct Proposal {
+|||     address target;       // offset 0
+|||     address newImpl;      // offset 1
+|||     bytes4 selector;      // offset 2
+|||     bytes32 proposerSig;  // offset 3
+|||     uint256 voteCount;    // offset 4
+|||     uint256 threshold;    // offset 5
+|||     uint256 deadline;     // offset 6
+|||     uint256 executed;     // offset 7
+||| }
+||| ```
+public export
+ProposalSchema : Schema
+ProposalSchema = MkSchema "ouf.proposals" SLOT_PROPOSALS_BASE
+  [ Value "target" TAddress
+  , Value "newImpl" TAddress
+  , Value "selector" TBytes4
+  , Value "proposerSig" TBytes32
+  , Value "voteCount" TUint256
+  , Value "threshold" TUint256
+  , Value "deadline" TUint256
+  , Value "executed" TUint256
+  ]
+
+||| Vote storage schema
+||| Maps (proposalId, auditor) -> Vote struct (2 fields)
+|||
+||| Accessed via nested mapping: votes[proposalId][auditor]
+public export
+VoteSchema : Schema
+VoteSchema = MkSchema "ouf.votes" SLOT_VOTES_BASE
+  [ Value "decision" TUint8
+  , Value "sig" TBytes32
+  ]
+
+||| Auditor list storage schema
+public export
+AuditorSchema : Schema
+AuditorSchema = MkSchema "ouf.auditors" SLOT_AUDITORS_BASE
+  [ Array "auditors" TAddress
+  ]
+
+||| Factory storage schema (singleton values)
+||| Note: Uses multiple base slots for logical separation
+public export
+FactorySchema : Schema
+FactorySchema = MkSchema "ouf.factory" SLOT_REGISTRY_BASE
+  [ Mapping "registry" TUint256 TAddress
+  , Value "upgraderCount" TUint256
+  ]
+
+||| Factory config schema (separate namespace)
+public export
+FactoryConfigSchema : Schema
+FactoryConfigSchema = MkSchema "ouf.factory.config" SLOT_DICTIONARY
+  [ Value "dictionary" TAddress
+  , Value "proposer" TAddress
+  , Value "admin" TAddress
+  ]

@@ -10,6 +10,7 @@ depends = base
         , idris2-subcontract
 
 modules = Main.Storages.Schema
+        , Main.Storages.SchemaVersions
         , Main.Functions.Factory
         , Main.Functions.ProposeUpgrade
         , Main.Functions.Vote
